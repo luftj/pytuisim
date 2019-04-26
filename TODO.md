@@ -1,12 +1,18 @@
 # TODO
 
+## open questions
+
+get noise source from TUI-objects as well?
+
 
 ## input
 
-[ ] receive TUIO
+[X] receive TUIO
 [ ] load object geometries
 [ ] convert TUIO to geometry
-[ ] load background GeoJSON
+[X] load background GeoJSON
+    [ ] parse more robustly
+    [X] get filename from config.ini
 
 ## putput
 
@@ -15,11 +21,14 @@
 [ ] receive noise json from model
 
 ## output
-[ ] plot background json
-[ ] plot object geometry
+
+[X] plot background json
+[X] plot object 
+    [ ] plot geometry
 [ ] plot noise json
 
 ## general
+
 [ ] packaging
     [ ] put used packages into seperate modules and repos
 [ ] deployment 

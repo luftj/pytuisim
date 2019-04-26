@@ -29,7 +29,7 @@ Uses
 
 ## configuration
 
-### config.ini
+### config.json
 contains deployment config, e.g. ip:port of TUIO server
 
 ### geometry.json
