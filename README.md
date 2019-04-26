@@ -26,3 +26,11 @@ Uses
 1. receive GeoJSON from noise sim
 1. print received GeoJSON
 1. profit
+
+## configuration
+
+### config.ini
+contains deployment config, e.g. ip:port of TUIO server
+
+### geometry.json
+contains geomtries for the different objects
