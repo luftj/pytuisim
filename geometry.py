@@ -6,14 +6,15 @@
 
 import json, sys
 
-offset = [566300.0, 5932300.0]
-zoom = 2
+def parsePolygon(feature):
+    pass
 
 class Geometry:
     minx=miny=sys.maxsize
     maxx=maxy=-sys.maxsize
 
     def __init__(self, points = []):
+        self.id = "0"
         self.points = points
         for newp in points:
             if(newp[0] < self.minx) : self.minx = newp[0]
@@ -24,22 +25,68 @@ class Geometry:
     def getRect(self):
         return self.minx, self.miny, self.maxx-self.minx, self.maxy-self.miny
 
+    def toGeoJSON(self):
+        ret = "{\"type\": \"Feature\",\"id\": \"" + str(self.id) + "\",\"geometry\": {\"type\": \"Polygon\",\"coordinates\": [["
+
+        for p in self.points:
+            ret+="["+str(p[0])+","+str(p[1])+"],"
+        ret+="["+str(self.points[0][0])+","+str(self.points[0][1])+"]" # closed ring, last one without trailing comma
+
+        ret += "]]}}"
+        return ret
+
     @staticmethod
     def fromjson(filepath):
         print(filepath)
+        geoms = []
+        with open(filepath) as file:
+            data = json.load(file)
+            idx = 1
+            for feature in data["features"]:
+                points = []
+                print(feature)
+                if feature["geometry"]["type"] == "MultiPolygon":
+                    for point in feature["geometry"]["coordinates"][0][0]:
+                        newp = (point[0],-point[1])
+                        points.append(newp)
+                elif feature["geometry"]["type"] == "Polygon":
+                    for point in feature["geometry"]["coordinates"][0]:
+                        newp = (point[0],-point[1])
+                        points.append(newp)
+                g = Geometry(points)
+                g.id = filepath + str(idx)
+                idx += 1
+                geoms.append(g)
+        
+        return geoms
+
+
+
+    @staticmethod
+    def createObject(filepath, id, position):
         ret = []
         with open(filepath) as file:
             data = json.load(file)
-            for feature in data["features"]:
-                for point in feature["geometry"]["coordinates"][0][0]:
-                    newp = ((point[0]-offset[0])/zoom,-(point[1]-offset[1])/zoom)
-
-                    print(newp)
-                    ret.append(newp)
-        
-        return Geometry(ret)
-
+            for obj in data["objects"]:
+                if(obj["id"] == id):
+                    for point in obj["coordinates"]:
+                        newp = (point[0]+position[0],point[1]+position[1])
+                        ret.append(newp)
+        print(ret)
+        g = Geometry(ret)
+        g.id = id
+        return g
 
     @staticmethod
     def createTest():
         return Geometry([(10,10), (20,10), (30,15), (20,20), (10,20)])
+
+    @staticmethod
+    def writeGeometriesToFile(geoms):
+        ret = "{\"type\": \"FeatureCollection\",\"features\": ["
+        for feature in geoms[:-1]:
+            ret += feature.toGeoJSON() + ","
+        ret += geoms[-1].toGeoJSON() # last one without trailing comma
+        
+        ret+= "]}"
+        return ret

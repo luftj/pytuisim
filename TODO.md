@@ -8,15 +8,19 @@ get noise source from TUI-objects as well?
 ## input
 
 [X] receive TUIO
-[ ] load object geometries
+[X] load object geometries
 [ ] convert TUIO to geometry
+    [ ] rotate geometry
 [X] load background GeoJSON
     [ ] parse more robustly
     [X] get filename from config.ini
+[ ] fixed scale (1:500?)
+[ ] proper geo-tranformations? (e.g. pyproj)
+    [ ] store projection in Geometry object
 
 ## putput
 
-[ ] convert object geometries to json
+[X] convert object geometries to json
 [ ] send object geometry json to noise model
 [ ] receive noise json from model
 
@@ -29,8 +33,12 @@ get noise source from TUI-objects as well?
 
 ## general
 
+[ ] python3 port?!
 [ ] packaging
+    [ ] config
+        [ ] tuio address/port from file (rewrite ot pytuio necessary)
     [ ] put used packages into seperate modules and repos
+    [ ] requirements.txt
 [ ] deployment 
     [ ] install script for used external packages
     [ ] install own modules and dependencies
