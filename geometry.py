@@ -5,9 +5,29 @@
 ###########
 
 import json, sys
+import math
 
 def parsePolygon(feature):
     pass
+
+def rotatePointAroundOrigin(point, angle):
+    # point to rotate nad angle in degrees
+    #
+    #     / cos t   -sin t  \
+    # M = |                 |
+    #     \ sin t   cos t   /
+    #
+    # r = M * p
+
+    m11 = math.cos(math.radians(angle))
+    m12 = -math.sin(math.radians(angle))
+    m21 = math.sin(math.radians(angle))
+    m22 = math.cos(math.radians(angle))
+    
+    ret = (point[0] * m11 + point [1] * m12,
+           point[0] * m21 + point [1] * m22)
+
+    return ret
 
 class Geometry:
     minx=miny=sys.maxsize
@@ -26,7 +46,9 @@ class Geometry:
         return self.minx, self.miny, self.maxx-self.minx, self.maxy-self.miny
 
     def toGeoJSON(self):
-        ret = "{\"type\": \"Feature\",\"id\": \"" + str(self.id) + "\",\"geometry\": {\"type\": \"Polygon\",\"coordinates\": [["
+        ret = "{\"type\": \"Feature\",\"id\": \"" 
+        ret += str(self.id) 
+        ret += "\",\"geometry\": {\"type\": \"Polygon\",\"coordinates\": [["
 
         for p in self.points:
             ret+="["+str(p[0])+","+str(p[1])+"],"
@@ -44,7 +66,7 @@ class Geometry:
             idx = 1
             for feature in data["features"]:
                 points = []
-                print(feature)
+                #print(feature)
                 if feature["geometry"]["type"] == "MultiPolygon":
                     for point in feature["geometry"]["coordinates"][0][0]:
                         newp = (point[0],-point[1])
@@ -60,18 +82,20 @@ class Geometry:
         
         return geoms
 
-
-
     @staticmethod
-    def createObject(filepath, id, position):
+    def createObject(filepath, id, position, orientation):
         ret = []
         with open(filepath) as file:
             data = json.load(file)
             for obj in data["objects"]:
                 if(obj["id"] == id):
                     for point in obj["coordinates"]:
-                        newp = (point[0]+position[0],point[1]+position[1])
+                        newp = rotatePointAroundOrigin(point, orientation) # rotate
+                        newp = (newp[0]+position[0],newp[1]+position[1])   # translate
                         ret.append(newp)
+        if(ret == []):
+            print("no geometry for given ID found!")
+            return None
         print(ret)
         g = Geometry(ret)
         g.id = id

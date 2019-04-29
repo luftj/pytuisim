@@ -34,3 +34,4 @@ contains deployment config, e.g. ip:port of TUIO server
 
 ### geometry.json
 contains geomtries for the different objects
+the rotational centre is at (0,0)

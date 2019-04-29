@@ -9,8 +9,8 @@ get noise source from TUI-objects as well?
 
 [X] receive TUIO
 [X] load object geometries
-[ ] convert TUIO to geometry
-    [ ] rotate geometry
+[X] convert TUIO to geometry
+    [X] rotate geometry
 [X] load background GeoJSON
     [ ] parse more robustly
     [X] get filename from config.ini

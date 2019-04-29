@@ -27,10 +27,13 @@ def saveObjects(trackingobjects,cam):
     ret = []
     for obj in trackingobjects():
         center = (obj.xpos*screenwidth+cam[0],-(obj.ypos*screenheight+cam[1])) # position of object in world coords
-        geom = geometry.Geometry.createObject("geometry.json", obj.id, center)
-        ret.append(geom)
+        geom = geometry.Geometry.createObject("geometry.json", obj.id, center, obj.angle)
+        if geom:
+            ret.append(geom)
 
     data = (geometry.Geometry.writeGeometriesToFile(ret))
+
+    # debug
     writeFile("testoutput.json",data)
 
 if __name__ == "__main__":
@@ -68,8 +71,9 @@ if __name__ == "__main__":
             pygame.draw.polygon(screen, (255,255,255), screencoords, 0 )
 
         # debug: putput json
-        # screencoords2 = [ (x[0]-cam[0],x[1]-cam[1]) for x in h[1].points]
-        # pygame.draw.polygon(screen, (0,0,255), screencoords2, 0 )
+        for gg in h:
+            screencoords2 = [ (x[0]-cam[0],x[1]-cam[1]) for x in gg.points]
+            pygame.draw.polygon(screen, (0,0,255), screencoords2, 0 )
 
         surf = pygame.Surface((24,24))
         surf.fill((255,0,0))
