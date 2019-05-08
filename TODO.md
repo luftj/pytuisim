@@ -10,7 +10,7 @@ get noise source from TUI-objects as well?
 - [X] receive TUIO
 - [X] load object geometries
   - [ ] real geojson?
-  - [ ] any ID / default gemetry for unknown IDs
+  - [X] any ID / default gemetry for unknown IDs
 - [X] convert TUIO to geometry
     - [X] rotate geometry
 - [X] load background GeoJSON

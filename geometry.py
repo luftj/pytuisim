@@ -92,6 +92,8 @@ class Geometry:
     @staticmethod
     def createObject(filepath, id, position, orientation):
         ret = []
+        defaultid = 1
+
         with open(filepath) as file:
             data = json.load(file)
             for obj in data["objects"]:
@@ -101,8 +103,8 @@ class Geometry:
                         newp = (newp[0]+position[0],newp[1]+position[1])   # translate
                         ret.append(newp)
         if(ret == []):
-            print("no geometry for given ID found!")
-            return None
+            print("no geometry for given ID found! Use default")
+            return Geometry.createObject(filepath,defaultid,position,orientation)
         print(ret)
         g = Geometry(ret)
         g.id = id
