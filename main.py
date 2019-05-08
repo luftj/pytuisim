@@ -58,8 +58,8 @@ class FileObserver(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
-    parser.add_argument('ip',type=str)
-    parser.add_argument('port',type=int)
+    parser.add_argument('--ip',type=str, default=json.load(open("config.json"))["tuio_host"],help="the IP address of the tuio host.")
+    parser.add_argument('--port',type=int, default=int(json.load(open("config.json"))["tuio_port"]))
     args = parser.parse_args()
     tracking = tuio.Tracking(args.ip,args.port)
     print("loaded profiles:", tracking.profiles.keys())
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     fo = FileObserver("conversion.geojson")
 
     cam = (566300,-5932300)
-        camspeed = 50
+    camspeed = 50
 
     while 1:
         if fo.ook():

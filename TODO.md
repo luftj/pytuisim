@@ -41,7 +41,7 @@ get noise source from TUI-objects as well?
 - [ ] python3 port?!
 - [ ] packaging
     - [ ] config
-        - [ ] tuio address/port from file
+        - [X] tuio address/port from file
     - [ ] put used packages into seperate modules and repos
     - [ ] requirements.txt
 - [ ] deployment 
