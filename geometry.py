@@ -42,6 +42,8 @@ class Geometry:
             if(newp[1] < self.miny) : self.miny = newp[1]
             if(newp[1] > self.maxy) : self.maxy = newp[1]
 
+        self.properties = {}
+
     def getRect(self):
         return self.minx, self.miny, self.maxx-self.minx, self.maxy-self.miny
 
@@ -61,24 +63,29 @@ class Geometry:
     def fromjson(filepath):
         print(filepath)
         geoms = []
-        with open(filepath) as file:
-            data = json.load(file)
-            idx = 1
-            for feature in data["features"]:
-                points = []
-                #print(feature)
-                if feature["geometry"]["type"] == "MultiPolygon":
-                    for point in feature["geometry"]["coordinates"][0][0]:
-                        newp = (point[0],-point[1])
-                        points.append(newp)
-                elif feature["geometry"]["type"] == "Polygon":
-                    for point in feature["geometry"]["coordinates"][0]:
-                        newp = (point[0],-point[1])
-                        points.append(newp)
-                g = Geometry(points)
-                g.id = filepath + str(idx)
-                idx += 1
-                geoms.append(g)
+        try:
+            with open(filepath) as file:
+                data = json.load(file)
+                idx = 1
+                for feature in data["features"]:
+                    points = []
+                    #print(feature)
+                    if feature["geometry"]["type"] == "MultiPolygon":
+                        for point in feature["geometry"]["coordinates"][0][0]:
+                            newp = (point[0],-point[1])
+                            points.append(newp)
+                    elif feature["geometry"]["type"] == "Polygon":
+                        for point in feature["geometry"]["coordinates"][0]:
+                            newp = (point[0],-point[1])
+                            points.append(newp)
+                    g = Geometry(points)
+                    g.id = filepath + str(idx)
+                    idx += 1
+                    g.properties = feature["properties"]
+                    geoms.append(g)
+        except EnvironmentError:
+            print("GeoJSON file not found!")
+            return []
         
         return geoms
 
@@ -110,7 +117,8 @@ class Geometry:
         ret = "{\"type\": \"FeatureCollection\",\"features\": ["
         for feature in geoms[:-1]:
             ret += feature.toGeoJSON() + ","
-        ret += geoms[-1].toGeoJSON() # last one without trailing comma
+        if len(geoms) > 0:
+            ret += geoms[-1].toGeoJSON() # last one without trailing comma
         
         ret+= "]}"
         return ret

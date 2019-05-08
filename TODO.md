@@ -9,6 +9,8 @@ get noise source from TUI-objects as well?
 
 - [X] receive TUIO
 - [X] load object geometries
+  - [ ] real geojson?
+  - [ ] any ID / default gemetry for unknown IDs
 - [X] convert TUIO to geometry
     - [X] rotate geometry
 - [X] load background GeoJSON
@@ -16,30 +18,34 @@ get noise source from TUI-objects as well?
     - [X] get filename from config.ini
 - [ ] fixed scale (1:500?)
 - [ ] proper geo-tranformations? (e.g. pyproj)
-    - [ ] store projection in Geometry object
+    - [ ] store projection in Geometry object?
 
 ## putput
 
 - [X] convert object geometries to json
-- [ ] send object geometry json to noise model
-- [ ] receive noise json from model
+- [X] send object geometry json to noise model
+- [X] receive noise json from model
+- [ ] pygame window (fullscreen, resize, ...)
 
 ## output
 
 - [X] plot background json
 - [X] plot object 
     - [ ] plot geometry
-- [ ] plot noise json
+- [X] plot noise json
+  - [X] read feature properties from file
+  - [X] colour iso-polys
 
 ## general
 
 - [ ] python3 port?!
 - [ ] packaging
     - [ ] config
-        - [ ] tuio address/port from file (rewrite ot pytuio necessary)
+        - [ ] tuio address/port from file
     - [ ] put used packages into seperate modules and repos
     - [ ] requirements.txt
 - [ ] deployment 
+    - [ ] start script
     - [ ] install script for used external packages
     - [ ] install own modules and dependencies
     - [ ] include external binary software (TUIO server etc)
