@@ -63,11 +63,14 @@ class Geometry:
 
     @staticmethod
     def fromjson(filepath):
-        print(filepath)
         geoms = []
         try:
             with open(filepath) as file:
-                data = json.load(file)
+                try:
+                    data = json.load(file)
+                except ValueError:
+                    print("No JSON found!")
+                    return []
                 idx = 1
                 for feature in data["features"]:
                     points = []

@@ -34,15 +34,21 @@ def pygame_init():
     size = screenwidth, screenheight
     return pygame.display.set_mode(size, pygame.DOUBLEBUF, depth=32)
 
+def init_tuio(args):
+    tracking = tuio.Tracking(args.ip,args.port)
+    print("loaded profiles:", tracking.profiles.keys())
+    print("list functions to access tracked objects:", tracking.get_helpers())
+    return tracking
+
 def writeFile(filepath, data):
     f= open(filepath,"w+")
     f.write(data)
 
-def saveObjects(trackingobjects,cam):
+def saveObjects(trackingobjects, cam):
     ret = []
     for obj in trackingobjects():
         center = (obj.xpos*screenwidth+cam[0],-(obj.ypos*screenheight+cam[1])) # position of object in world coords
-        geom = geometry.Geometry.createObject("geometry.json", obj.id, center, obj.angle)
+        geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
 
@@ -54,19 +60,32 @@ def saveObjects(trackingobjects,cam):
     # output
     writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json",data)
 
-def makeSomeNoise():
+from thread import start_new_thread
+
+def noisethread():
     shapefile = noisemap.main()
     convert.convert(shapefile, putputfilepath)
 
+def makeSomeNoise():
+    start_new_thread(noisethread,())
+
+
+def handle_object(obj, obj_surface):
+    rect = obj_surface.get_rect()  
+    rect.center = (obj.xpos*screenwidth,obj.ypos*screenheight)           # position of object
+    obj_surface.set_colorkey(black)                            # allows transparency while padding during rotate
+    rotated = pygame.transform.rotate(obj_surface,-obj.angle)   # rotate objects
+    rect = rotated.get_rect()                           # re-align (rotation resizes)
+    rect.center = (obj.xpos*screenwidth,obj.ypos*screenheight)           # re-align
+    screen.blit(rotated,rect)   
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
-    parser.add_argument('--ip',type=str, default=config["tuio_host"],help="the IP address of the tuio host.")
-    parser.add_argument('--port',type=int, default=int(config["tuio_port"]),help="the port of the tuio host.")
+    parser.add_argument('--ip', type=str, default=config["tuio_host"],help="the IP address of the tuio host.")
+    parser.add_argument('--port', type=int, default=int(config["tuio_port"]),help="the port of the tuio host.")
     args = parser.parse_args()
 
-    tracking = tuio.Tracking(args.ip,args.port)
-    print("loaded profiles:", tracking.profiles.keys())
-    print("list functions to access tracked objects:", tracking.get_helpers())
+    tracking = init_tuio(args)
     
     screen = pygame_init()
     isFullscreen = False
@@ -74,7 +93,7 @@ if __name__ == "__main__":
     black = 0, 0, 0
 
     mapgeoms = geometry.Geometry.fromjson(config["map_path"])
-    h = geometry.Geometry.fromjson(putputfilepath)
+    noise_polys = geometry.Geometry.fromjson(putputfilepath)
 
     fo = FileObserver(putputfilepath)
 
@@ -84,39 +103,35 @@ if __name__ == "__main__":
     while 1:
         if fo.ook():
             print("noise changed")
-            h = geometry.Geometry.fromjson(putputfilepath) # reload noise output geometry, when file changed
+            new_noise_polys = geometry.Geometry.fromjson(putputfilepath) # reload noise output geometry, when file changed
+            if not new_noise_polys == []:
+                noise_polys = new_noise_polys
 
         screen.fill(black)
+        # draw background map
         for mapgeom in mapgeoms:
             screencoords = [ (x[0]-cam[0],x[1]-cam[1]) for x in mapgeom.points]
             pygame.draw.polygon(screen, (255,255,255), screencoords, 0 )
 
-        noisesurf= pygame.Surface((screenwidth,screenheight), pygame.SRCALPHA)
-        noisesurf.fill((0,0,0,0))         
-        # plot noise
-        for gg in h:
-            screencoords2 = [ (x[0]-cam[0],x[1]-cam[1]) for x in gg.points]
-            col = config["colourkey"][str(gg.properties["IDISO"])]
-            pygame.draw.polygon(noisesurf, col, screencoords2, 0 )
-        screen.blit(noisesurf, (0,0))  
+        noise_surface = pygame.Surface((screenwidth, screenheight), pygame.SRCALPHA) # rendertarget for noise output with transpaency
+        noise_surface.fill((0,0,0,0))         
+        # draw noise
+        for noise_poly in noise_polys:
+            screencoords2 = [ (x[0]-cam[0],x[1]-cam[1]) for x in noise_poly.points]
+            col = config["colourkey"][str(noise_poly.properties["IDISO"])]
+            pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
+        screen.blit(noise_surface, (0,0))  
 
-        surf = pygame.Surface((24,24))
-        surf.fill((255,0,0))
-        rect = surf.get_rect()  
+
+        obj_surface = pygame.Surface((24,24)) # rendertarget for objects
+        obj_surface.fill((255,0,0))
+        rect = obj_surface.get_rect()  
 
         # handle objects
         tracking.update()
         for obj in tracking.objects():
-            # print(obj.angle)
-            rect.center = (obj.xpos*screenwidth,obj.ypos*screenheight)           # position of object
-            surf.set_colorkey(black)                            # allows transparency while padding during rotate
-            rotated = pygame.transform.rotate(surf,obj.angle)   # rotate objects
-            rect = rotated.get_rect()                           # re-align (rotation resizes)
-            rect.center = (obj.xpos*screenwidth,obj.ypos*screenheight)           # re-align
-            screen.blit(rotated,rect)                           # draw object
+            handle_object(obj, obj_surface)
             # pygame.draw.rect(screen,black, (obj.xpos*screenwidth-2,obj.ypos*screenheight-2,4,4)) # draw center of object
-
-
 
         # Keyboard input
         keys = []   # reset input

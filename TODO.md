@@ -13,7 +13,7 @@ get noise source from TUI-objects as well?
   - [X] any ID / default gemetry for unknown IDs
 - [X] convert TUIO to geometry
     - [X] rotate geometry
-      - [ ] fix rotation (consider adjacent objets)
+      - [X] fix rotation (consider adjacent objets)
 - [X] load background GeoJSON
     - [ ] parse more robustly
     - [X] get filename from config.ini
@@ -27,12 +27,13 @@ get noise source from TUI-objects as well?
 - [X] send object geometry json to noise model
 - [X] receive noise json from model
 - [ ] pygame window (fullscreen, resize, ...)
+- [ ] be faster!
 
 ## output
 
 - [X] plot background json
 - [X] plot object 
-    - [ ] plot geometry
+    - [ ] plot geometry in real time
 - [X] plot noise json
   - [X] read feature properties from file
   - [X] colour iso-polys
@@ -41,6 +42,7 @@ get noise source from TUI-objects as well?
 ## general
 
 - [ ] python3 port?!
+- [ ] comment code
 - [ ] packaging
     - [ ] config
         - [X] tuio address/port from file
