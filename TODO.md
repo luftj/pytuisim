@@ -20,6 +20,7 @@ get noise source from TUI-objects as well?
 - [ ] fixed scale (1:500?)
 - [ ] proper geo-tranformations? (e.g. pyproj)
     - [ ] store projection in Geometry object?
+- [ ] allow raster background map
 
 ## putput
 
@@ -28,6 +29,8 @@ get noise source from TUI-objects as well?
 - [X] receive noise json from model
 - [X] pygame window (fullscreen, ...)
 - [ ] be faster!
+  - [ ] tracking async?
+  - [ ] drop frames?
 
 ## output
 
@@ -38,6 +41,8 @@ get noise source from TUI-objects as well?
   - [X] read feature properties from file
   - [X] colour iso-polys
     - [X] read colour key from config
+- [ ] indicate computation in process
+- [ ] show colour legend
 
 ## general
 
