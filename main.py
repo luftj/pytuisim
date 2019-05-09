@@ -81,8 +81,8 @@ def handle_object(obj, obj_surface):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
-    parser.add_argument('--ip', type=str, default=config["tuio_host"],help="the IP address of the tuio host.")
-    parser.add_argument('--port', type=int, default=int(config["tuio_port"]),help="the port of the tuio host.")
+    parser.add_argument('--ip', type=str, default=config["tuio_host"],help="the IP address of the tuio host. If omitted, read from config.json")
+    parser.add_argument('--port', type=int, default=int(config["tuio_port"]),help="the port of the tuio host. If omitted, read from config.json")
     args = parser.parse_args()
 
     tracking = init_tuio(args)
