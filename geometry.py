@@ -33,6 +33,8 @@ class Geometry:
     minx=miny=sys.maxsize
     maxx=maxy=-sys.maxsize
 
+    defaultid = 0
+
     def __init__(self, points = []):
         self.id = "0"
         self.points = points
@@ -92,7 +94,6 @@ class Geometry:
     @staticmethod
     def createObject(filepath, id, position, orientation):
         ret = []
-        defaultid = 1
 
         with open(filepath) as file:
             data = json.load(file)
@@ -104,7 +105,7 @@ class Geometry:
                         ret.append(newp)
         if(ret == []):
             print("no geometry for given ID found! Use default")
-            return Geometry.createObject(filepath,defaultid,position,orientation)
+            return Geometry.createObject(filepath,Geometry.defaultid,position,orientation)
         print(ret)
         g = Geometry(ret)
         g.id = id

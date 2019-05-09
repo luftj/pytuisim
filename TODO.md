@@ -13,6 +13,7 @@ get noise source from TUI-objects as well?
   - [X] any ID / default gemetry for unknown IDs
 - [X] convert TUIO to geometry
     - [X] rotate geometry
+      - [ ] fix rotation (consider adjacent objets)
 - [X] load background GeoJSON
     - [ ] parse more robustly
     - [X] get filename from config.ini
@@ -35,6 +36,7 @@ get noise source from TUI-objects as well?
 - [X] plot noise json
   - [X] read feature properties from file
   - [X] colour iso-polys
+    - [ ] read colour key from config
 
 ## general
 
@@ -42,10 +44,11 @@ get noise source from TUI-objects as well?
 - [ ] packaging
     - [ ] config
         - [X] tuio address/port from file
+        - [ ] map center / scale (or calculate it from input map?)
     - [ ] put used packages into seperate modules and repos
     - [ ] requirements.txt
 - [ ] deployment 
     - [ ] start script
-    - [ ] install script for used external packages
+    - [ ] install script for used external packages -> requirements.txt
     - [ ] install own modules and dependencies
-    - [ ] include external binary software (TUIO server etc)
+    - [ ] include external binary software? (TUIO server etc)
