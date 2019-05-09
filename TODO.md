@@ -48,7 +48,7 @@ get noise source from TUI-objects as well?
         - [X] tuio address/port from file
         - [ ] map center / scale (or calculate it from input map?)
     - [ ] put used packages into seperate modules and repos
-    - [ ] requirements.txt
+    - [X] requirements.txt
 - [ ] deployment 
     - [ ] start script
     - [ ] install script for used external packages -> requirements.txt

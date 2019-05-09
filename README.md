@@ -20,7 +20,7 @@ This project brings noise simulations to a tangible user interface
 * [noise simulation](https://github.com/CityScope/CSL_Hamburg_Noise) -- put it in ```CSL_Hamburg_Noise``` directory
   
 
-``` python -m pip install requirements.txt ```
+```python -m pip install requirements.txt CSL_Hamburg_Noise/requirements.txt```
 
 ## Usage
 
@@ -50,7 +50,10 @@ Windows: ```java -cp 'bin/*;bundle/*;sys-bundle/*' org.h2.tools.Server -pg``` in
 ## configuration
 
 ### config.json
-Contains deployment config: ip:port of TUIO server and filepath to underlying background map (as GeoJSON)
+Contains deployment config: 
+* ip:port of TUIO server 
+* filepath to underlying background map (as GeoJSON)
+* colour coding key for noise output. in 5 dB(A) steps from 0 = <45 to 6 = >75dB(A)
 
 ### geometry.json
 Contains geomtries for the different objects, see the provided sample for syntax.
