@@ -1,5 +1,15 @@
 {
-    "map_path" : "SiedlungsflaechenGrasbrook.json",
+    "map_path" : "data/SiedlungsflaechenGrasbrook.json",
     "tuio_host" : "127.0.0.1",
-    "tuio_port" : "3333"
+    "tuio_port" : "3333",
+    "colourkey" : {
+        "0":[ 76,200,  0,128],
+        "1":[ 85,255,  0,128],
+        "2":[199,255,179,128],
+        "3":[255,255,  0,128],
+        "4":[255,170,  0,128],
+        "5":[255,  0,  0,128],
+        "6":[213,  0,255,128],
+        "7":[150,  0,100,128] 
+    }
 }

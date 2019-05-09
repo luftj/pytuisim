@@ -50,9 +50,9 @@ Windows: ```java -cp 'bin/*;bundle/*;sys-bundle/*' org.h2.tools.Server -pg``` in
 ## configuration
 
 ### config.json
-contains deployment config: ip:port of TUIO server and filepath to underlying background map (as GeoJSON)
+Contains deployment config: ip:port of TUIO server and filepath to underlying background map (as GeoJSON)
 
 ### geometry.json
-contains geomtries for the different objects, see the provided sample for syntax
-the rotational centre is at (0,0)
-use the ID 0 to provide a default geometry for all not specifically described TUIO objects
+Contains geomtries for the different objects, see the provided sample for syntax.
+The rotational centre is at (0,0).
+Use the ID 0 to provide a default geometry for all not specifically described TUIO objects

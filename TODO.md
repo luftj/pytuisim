@@ -36,7 +36,7 @@ get noise source from TUI-objects as well?
 - [X] plot noise json
   - [X] read feature properties from file
   - [X] colour iso-polys
-    - [ ] read colour key from config
+    - [X] read colour key from config
 
 ## general
 
