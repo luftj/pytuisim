@@ -26,7 +26,7 @@ get noise source from TUI-objects as well?
 - [X] convert object geometries to json
 - [X] send object geometry json to noise model
 - [X] receive noise json from model
-- [ ] pygame window (fullscreen, resize, ...)
+- [X] pygame window (fullscreen, ...)
 - [ ] be faster!
 
 ## output
