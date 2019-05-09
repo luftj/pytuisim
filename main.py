@@ -53,6 +53,13 @@ def writeFile(filepath, data):
     f= open(filepath,"w+")
     f.write(data)
 
+def noisethread():
+    shapefile = noisemap.main()
+    convert.convert(shapefile, putputfilepath)
+
+def makeSomeNoise():
+    start_new_thread(noisethread,())
+
 def saveObjects(trackingobjects, cam):
     ret = []
     for obj in trackingobjects():
@@ -70,22 +77,15 @@ def saveObjects(trackingobjects, cam):
     # output
     writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json",data)
 
-def noisethread():
-    shapefile = noisemap.main()
-    convert.convert(shapefile, putputfilepath)
-
-def makeSomeNoise():
-    start_new_thread(noisethread,())
-
 def handle_object(obj, obj_surface):
     screensize = pygame.display.get_surface().get_size()
     rect = obj_surface.get_rect()  
-    rect.center = (obj.xpos*screensize[0],obj.ypos*screensize[1])           # position of object
-    obj_surface.set_colorkey(black)                            # allows transparency while padding during rotate
-    rotated = pygame.transform.rotate(obj_surface,-obj.angle)   # rotate objects
-    rect = rotated.get_rect()                           # re-align (rotation resizes)
-    rect.center = (obj.xpos*screensize[0],obj.ypos*screensize[1])           # re-align
-    pygame.display.get_surface().blit(rotated,rect)   
+    rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # position of object
+    obj_surface.set_colorkey(black)                                 # allows transparency while padding during rotate
+    rotated = pygame.transform.rotate(obj_surface, -obj.angle)       # rotate objects
+    rect = rotated.get_rect()                                       # re-align (rotation resizes)
+    rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # re-align
+    pygame.display.get_surface().blit(rotated, rect)   
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
@@ -93,16 +93,15 @@ if __name__ == "__main__":
     parser.add_argument('--port', type=int, default=int(config["tuio_port"]),help="the port of the tuio host. If omitted, read from config.json")
     args = parser.parse_args()
 
+    # initialise
     tracking = init_tuio(args)
-    
     screen = pygame_init()
     isFullscreen = False
-
     black = 0, 0, 0
 
+    # load geo files
     mapgeoms = geometry.Geometry.fromjson(config["map_path"])
     noise_polys = geometry.Geometry.fromjson(putputfilepath)
-
     fo = FileObserver(putputfilepath)
 
     cam = (566300,-5932300)
@@ -125,7 +124,7 @@ if __name__ == "__main__":
         noise_surface.fill((0,0,0,0))         
         # draw noise
         for noise_poly in noise_polys:
-            screencoords2 = [ (x[0]-cam[0],x[1]-cam[1]) for x in noise_poly.points]
+            screencoords2 = [ (x[0]-cam[0], x[1]-cam[1]) for x in noise_poly.points]
             col = config["colourkey"][str(noise_poly.properties["IDISO"])]
             pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
         screen.blit(noise_surface, (0,0))  
@@ -151,7 +150,7 @@ if __name__ == "__main__":
         if(keys != [] and keys[pygame.K_ESCAPE]):
             sys.exit()
 
-
+        # cam navigation
         if(keys != [] and keys[pygame.K_w]):
             cam = (cam[0],cam[1]-camspeed)
         if(keys != [] and keys[pygame.K_a]):
@@ -165,6 +164,7 @@ if __name__ == "__main__":
             saveObjects(tracking.objects,cam)
             makeSomeNoise()
 
+        # toggle fullscreen mode
         if(keys != [] and keys[pygame.K_SPACE]):
             if not isFullscreen:
                 screen = pygame.display.set_mode([fullscreen_width,fullscreen_height],flags=pygame.DOUBLEBUF|pygame.HWSURFACE|pygame.FULLSCREEN,depth=32)
