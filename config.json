@@ -2,6 +2,7 @@
     "map_path" : "data/grasbrook_land.geojson",
     "tuio_host" : "127.0.0.1",
     "tuio_port" : "3333",
+    "pxpm" : 3.75,
     "colourkey" : {
         "0":[ 76,200,  0,128],
         "1":[ 85,255,  0,128],

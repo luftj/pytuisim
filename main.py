@@ -13,9 +13,9 @@ screenwidth = 800
 screenheight = 800
 fullscreen_width = 0
 fullscreen_height = 0
-modelscale = 1/500
 config = json.load(open("config.json"))
 putputfilepath = "data/conversion.geojson"
+scale = config["pxpm"]
 
 class FileObserver(object):
     def __init__(self,file):
@@ -63,10 +63,8 @@ def makeSomeNoise():
 def saveObjects(trackingobjects, cam):
     ret = []
     for obj in trackingobjects():
-        screensize = pygame.display.get_surface().get_size()
-        # obj.xpos/ypos is in [0,1]
-        #center = (obj.xpos*screensize[0]+cam[0],-(obj.ypos*screensize[1]+cam[1])) # position of object in world coords
-        center = screen_to_map(obj.xpos, obj.ypos, screensize[0], screensize[1], cam) # position of object in world coords
+        # obj.xpos,ypos is in [0,1]
+        center = screen_to_map(obj.xpos, obj.ypos, cam) # position of object in world coords
         geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
@@ -89,12 +87,13 @@ def handle_object(obj, obj_surface):
     rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # re-align
     pygame.display.get_surface().blit(rotated, rect)   
 
-def map_to_screen(x, y, cam, scale = 3.75):
+def map_to_screen(x, y, cam):
     sc = scale # depends on ppi of display!
     return ((x-cam[0])*sc,(y-cam[1])*sc)
 
-def screen_to_map(x, y, w, h, cam, scale = 0.267):
-    sc = scale # depends on ppi of display!
+def screen_to_map(x, y, cam):
+    w,h = pygame.display.get_surface().get_size()
+    sc = 1.0/scale # depends on ppi of display!
     return ((x * w * sc + cam[0]), -(y * h * sc + cam[1]))
 
 if __name__ == "__main__":
@@ -118,7 +117,6 @@ if __name__ == "__main__":
     camspeed = 50
 
     scaleimg = pygame.image.load("scale_100m_325px.png")
-    scalerect = scaleimg.get_rect()
     scaleimg = pygame.transform.scale(scaleimg,(int(100*3.75),scaleimg.get_size()[1]))
     
     #scalerect.width = 600#map_to_screen(100,0,cam)[0]
@@ -158,10 +156,9 @@ if __name__ == "__main__":
             handle_object(obj, obj_surface)
             # pygame.draw.rect(screen,black, (obj.xpos*screenwidth-2,obj.ypos*screenheight-2,4,4)) # draw center of object
 
-
         # draw legend
         screen.blit(scaleimg, (0,screen.get_size()[1]-40))
-
+        
 
         # Keyboard input
         keys = []   # reset input

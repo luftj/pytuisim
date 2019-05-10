@@ -10,7 +10,7 @@ get noise source from TUI-objects as well?
 - [X] receive TUIO
 - [X] load object geometries
   - [ ] real geojson?
-  - [X] any ID / default gemetry for unknown IDs
+  - [X] any ID / default geometry for unknown IDs
 - [X] convert TUIO to geometry
     - [X] rotate geometry
       - [X] fix rotation (consider adjacent objets)
@@ -18,7 +18,7 @@ get noise source from TUI-objects as well?
     - [ ] parse more robustly
     - [X] get filename from config.ini
 - [X] fixed scale (1:500?)
-  - [ ] from config
+  - [X] from config
   - [ ] seperate model scale from physical display PPI scale
 - [ ] proper geo-tranformations? (e.g. pyproj)
     - [ ] store projection in Geometry object?
@@ -38,7 +38,7 @@ get noise source from TUI-objects as well?
 
 - [X] plot background json
 - [X] plot object 
-    - [ ] plot geometry in real time
+    - [ ] plot geometry in real time? Shouldn't be necessary, when tracking is fast enough
 - [X] plot noise json
   - [X] read feature properties from file
   - [X] colour iso-polys
@@ -54,6 +54,7 @@ get noise source from TUI-objects as well?
     - [ ] config
         - [X] tuio address/port from file
         - [ ] map center / scale (or calculate it from input map?)
+        - [ ] "invert" option, for different camera setups?
     - [ ] put used packages into seperate modules and repos
     - [X] requirements.txt
 - [ ] deployment 
