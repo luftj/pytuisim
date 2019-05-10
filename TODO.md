@@ -17,7 +17,9 @@ get noise source from TUI-objects as well?
 - [X] load background GeoJSON
     - [ ] parse more robustly
     - [X] get filename from config.ini
-- [ ] fixed scale (1:500?)
+- [X] fixed scale (1:500?)
+  - [ ] from config
+  - [ ] seperate model scale from physical display PPI scale
 - [ ] proper geo-tranformations? (e.g. pyproj)
     - [ ] store projection in Geometry object?
 - [ ] allow raster background map

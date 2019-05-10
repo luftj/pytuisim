@@ -117,6 +117,12 @@ if __name__ == "__main__":
     cam = (566300,-5932300)
     camspeed = 50
 
+    scaleimg = pygame.image.load("scale_100m_325px.png")
+    scalerect = scaleimg.get_rect()
+    scaleimg = pygame.transform.scale(scaleimg,(int(100*3.75),scaleimg.get_size()[1]))
+    
+    #scalerect.width = 600#map_to_screen(100,0,cam)[0]
+
     while 1:
         if fo.ook():
             print("noise changed")
@@ -151,6 +157,11 @@ if __name__ == "__main__":
         for obj in tracking.objects():
             handle_object(obj, obj_surface)
             # pygame.draw.rect(screen,black, (obj.xpos*screenwidth-2,obj.ypos*screenheight-2,4,4)) # draw center of object
+
+
+        # draw legend
+        screen.blit(scaleimg, (0,screen.get_size()[1]-40))
+
 
         # Keyboard input
         keys = []   # reset input
