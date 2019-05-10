@@ -64,8 +64,9 @@ def saveObjects(trackingobjects, cam):
     ret = []
     for obj in trackingobjects():
         screensize = pygame.display.get_surface().get_size()
+        # obj.xpos/ypos is in [0,1]
         #center = (obj.xpos*screensize[0]+cam[0],-(obj.ypos*screensize[1]+cam[1])) # position of object in world coords
-        center = screen_to_map(obj.xpos,obj.ypos,screensize[0],screensize[1],cam) # position of object in world coords
+        center = screen_to_map(obj.xpos, obj.ypos, screensize[0], screensize[1], cam) # position of object in world coords
         geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
@@ -94,7 +95,7 @@ def map_to_screen(x, y, cam, scale = 3.75):
 
 def screen_to_map(x, y, w, h, cam, scale = 0.267):
     sc = scale # depends on ppi of display!
-    return ((x*w+cam[0])*sc, -(y*h+cam[1])*sc)
+    return ((x * w * sc + cam[0]), -(y * h * sc + cam[1]))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
