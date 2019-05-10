@@ -9,11 +9,11 @@ from CSL_Hamburg_Noise import noisemap
 import geometry
 import convert
 
-screenwidth = 1000
+screenwidth = 800
 screenheight = 800
 fullscreen_width = 0
 fullscreen_height = 0
-scale = 1/500
+modelscale = 1/500
 config = json.load(open("config.json"))
 putputfilepath = "data/conversion.geojson"
 
@@ -64,7 +64,8 @@ def saveObjects(trackingobjects, cam):
     ret = []
     for obj in trackingobjects():
         screensize = pygame.display.get_surface().get_size()
-        center = (obj.xpos*screensize[0]+cam[0],-(obj.ypos*screensize[1]+cam[1])) # position of object in world coords
+        #center = (obj.xpos*screensize[0]+cam[0],-(obj.ypos*screensize[1]+cam[1])) # position of object in world coords
+        center = screen_to_map(obj.xpos,obj.ypos,screensize[0],screensize[1],cam) # position of object in world coords
         geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
@@ -86,6 +87,14 @@ def handle_object(obj, obj_surface):
     rect = rotated.get_rect()                                       # re-align (rotation resizes)
     rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # re-align
     pygame.display.get_surface().blit(rotated, rect)   
+
+def map_to_screen(x, y, cam, scale = 3.75):
+    sc = scale # depends on ppi of display!
+    return ((x-cam[0])*sc,(y-cam[1])*sc)
+
+def screen_to_map(x, y, w, h, cam, scale = 0.267):
+    sc = scale # depends on ppi of display!
+    return ((x*w+cam[0])*sc, -(y*h+cam[1])*sc)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
@@ -117,7 +126,8 @@ if __name__ == "__main__":
         screen.fill(black)
         # draw background map
         for mapgeom in mapgeoms:
-            screencoords = [ (x[0]-cam[0],x[1]-cam[1]) for x in mapgeom.points]
+            #screencoords = [ (x[0]-cam[0],x[1]-cam[1]) for x in mapgeom.points]
+            screencoords = [ map_to_screen(x[0],x[1],cam) for x in mapgeom.points]
             pygame.draw.polygon(screen, (255,255,255), screencoords, 0 )
 
         noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
@@ -125,6 +135,7 @@ if __name__ == "__main__":
         # draw noise
         for noise_poly in noise_polys:
             screencoords2 = [ (x[0]-cam[0], x[1]-cam[1]) for x in noise_poly.points]
+            screencoords2 = [ map_to_screen(x[0], x[1], cam) for x in noise_poly.points]
             col = config["colourkey"][str(noise_poly.properties["IDISO"])]
             pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
         screen.blit(noise_surface, (0,0))  
