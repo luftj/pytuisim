@@ -137,12 +137,16 @@ if __name__ == "__main__":
     map_surface.fill(black)
     noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
     noise_surface.fill((0,0,0,0))
+    obj_surface = pygame.Surface((24,24)) # rendertarget for objects
+    obj_surface.fill((255,0,0))
     # draw background map
     draw_map(map_surface,mapgeoms)
     # draw noise
     draw_noise(noise_surface, noise_polys)
     screen.blit(noise_surface, (0,0))
     redraw = False
+    
+    fo = FileObserver(putputfilepath)
 
 
     while 1:
@@ -151,8 +155,6 @@ if __name__ == "__main__":
             new_noise_polys = geometry.Geometry.fromjson(putputfilepath) # reload noise output geometry, when file changed
             if not new_noise_polys == []:
                 noise_polys = new_noise_polys
-                if not fo:
-                    fo = FileObserver(putputfilepath)
                 redraw = True
                     
   
@@ -166,10 +168,6 @@ if __name__ == "__main__":
             # draw noise
             draw_noise(noise_surface, noise_polys)
             redraw = False
-
-
-        obj_surface = pygame.Surface((24,24)) # rendertarget for objects
-        obj_surface.fill((255,0,0))
 
         # handle objects
         tracking.update()
@@ -215,6 +213,9 @@ if __name__ == "__main__":
             else:
                 screen = pygame.display.set_mode([screenwidth,screenheight])
             isFullscreen = not isFullscreen
+
+            map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
+            noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
             redraw = True
 
         if(keys != [] and keys[pygame.K_h]): # debug output
