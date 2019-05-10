@@ -52,7 +52,7 @@ Windows: ```java -cp 'bin/*;bundle/*;sys-bundle/*' org.h2.tools.Server -pg``` in
 ### config.json
 Contains deployment config: 
 * ip:port of TUIO server (you can also pass it over the commandline like this: ```python main.py --ip 127.0.0.0 --port 3333```).
-* filepath to underlying background map (as GeoJSON).
+* filepath to underlying background map (as GeoJSON). The geodata should be in a metric projection, e.g. EPSG:25832.
 * The scale as a constant in pixel/meter. This of course has to be calculated from the desired model scale (e.g. 1:500) and the display pixel density.
 * The geo-coordinates to center the camera on.
 * colour coding key for noise output. in 5 dB(A) steps from 0 = <45 to 6 = >75dB(A).
