@@ -2,6 +2,7 @@
     "objects": [
         {
             "id": 0,
+            "name" : "unspecified block",
             "coordinates": [
                 [-8,
                  -8],
@@ -12,9 +13,35 @@
                 [ 8,
                  -8]
             ]
-        },
-        {
+        },{
+            "id": 1,
+            "name" : "16x16 block",
+            "coordinates": [
+                [-8,
+                 -8],
+                [-8,
+                  8],
+                [ 8,
+                  8],
+                [ 8,
+                 -8]
+            ]
+        },{
+            "id": 5,
+            "name" : "16x40 block",
+            "coordinates": [
+                [-8,
+                  8],
+                [ 8,
+                  8],
+                [ 8,
+                 -40],
+                [-8,
+                 -40]
+            ]
+        },{
             "id": 6,
+            "name" : "L-shape",
             "coordinates": [
                 [-8,
                   8],
@@ -32,6 +59,7 @@
         },
         {
             "id": 3,
+            "name" : "U-shape",
             "coordinates": [
                 [ 8,
                   8],
