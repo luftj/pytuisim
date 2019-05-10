@@ -41,7 +41,7 @@ def pygame_init():
     fullscreen_height = pygame.display.Info().current_h
     
     size = screenwidth, screenheight
-    return pygame.display.set_mode(size, pygame.DOUBLEBUF|pygame.HWSURFACE|pygame.RESIZABLE, depth=32)
+    return pygame.display.set_mode(size)
 
 def init_tuio(args):
     tracking = tuio.Tracking(args.ip,args.port)
@@ -111,15 +111,15 @@ if __name__ == "__main__":
     # load geo files
     mapgeoms = geometry.Geometry.fromjson(config["map_path"])
     noise_polys = geometry.Geometry.fromjson(putputfilepath)
-    fo = FileObserver(putputfilepath)
+    if not noise_polys == []:
+        fo = FileObserver(putputfilepath)
 
-    cam = (566300,-5932300)
-    camspeed = 50
+    cam = config["mapcenter"]
+    camspeed = 70
 
     scaleimg = pygame.image.load("scale_100m_325px.png")
-    scaleimg = pygame.transform.scale(scaleimg,(int(100*3.75),scaleimg.get_size()[1]))
+    scaleimg = pygame.transform.scale(scaleimg,(int(100*config["pxpm"]),scaleimg.get_size()[1]))
     
-    #scalerect.width = 600#map_to_screen(100,0,cam)[0]
 
     while 1:
         if fo.ook():
@@ -127,11 +127,12 @@ if __name__ == "__main__":
             new_noise_polys = geometry.Geometry.fromjson(putputfilepath) # reload noise output geometry, when file changed
             if not new_noise_polys == []:
                 noise_polys = new_noise_polys
+                if not fo:
+                    fo = FileObserver(putputfilepath)
 
         screen.fill(black)
         # draw background map
         for mapgeom in mapgeoms:
-            #screencoords = [ (x[0]-cam[0],x[1]-cam[1]) for x in mapgeom.points]
             screencoords = [ map_to_screen(x[0],x[1],cam) for x in mapgeom.points]
             pygame.draw.polygon(screen, (255,255,255), screencoords, 0 )
 
@@ -148,13 +149,11 @@ if __name__ == "__main__":
 
         obj_surface = pygame.Surface((24,24)) # rendertarget for objects
         obj_surface.fill((255,0,0))
-        rect = obj_surface.get_rect()  
 
         # handle objects
         tracking.update()
         for obj in tracking.objects():
             handle_object(obj, obj_surface)
-            # pygame.draw.rect(screen,black, (obj.xpos*screenwidth-2,obj.ypos*screenheight-2,4,4)) # draw center of object
 
         # draw legend
         screen.blit(scaleimg, (0,screen.get_size()[1]-40))
@@ -172,13 +171,13 @@ if __name__ == "__main__":
 
         # cam navigation
         if(keys != [] and keys[pygame.K_w]):
-            cam = (cam[0],cam[1]-camspeed)
+            cam = (cam[0], cam[1]-camspeed)
         if(keys != [] and keys[pygame.K_a]):
-            cam = (cam[0]-camspeed,cam[1])
+            cam = (cam[0]-camspeed, cam[1])
         if(keys != [] and keys[pygame.K_s]):
-            cam = (cam[0],cam[1]+camspeed)
+            cam = (cam[0], cam[1]+camspeed)
         if(keys != [] and keys[pygame.K_d]):
-            cam = (cam[0]+camspeed,cam[1])
+            cam = (cam[0]+camspeed, cam[1])
 
         if(keys != [] and keys[pygame.K_RETURN]):
             saveObjects(tracking.objects,cam)
@@ -187,9 +186,9 @@ if __name__ == "__main__":
         # toggle fullscreen mode
         if(keys != [] and keys[pygame.K_SPACE]):
             if not isFullscreen:
-                screen = pygame.display.set_mode([fullscreen_width,fullscreen_height],flags=pygame.DOUBLEBUF|pygame.HWSURFACE|pygame.FULLSCREEN,depth=32)
+                screen = pygame.display.set_mode([fullscreen_width,fullscreen_height],flags=pygame.FULLSCREEN)
             else:
-                screen = pygame.display.set_mode([screenwidth,screenheight],flags=pygame.DOUBLEBUF|pygame.HWSURFACE|pygame.RESIZABLE,depth=32)
+                screen = pygame.display.set_mode([screenwidth,screenheight])
             isFullscreen = not isFullscreen
 
         if(keys != [] and keys[pygame.K_h]): # debug output
