@@ -32,7 +32,8 @@ get noise source from TUI-objects as well?
 - [X] pygame window (fullscreen, ...)
 - [ ] be faster!
   - [ ] tracking async?
-  - [ ] drop frames?
+  - [X] optimise drawing
+  - [X] noise sim
 
 ## output
 

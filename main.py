@@ -96,6 +96,19 @@ def screen_to_map(x, y, cam):
     sc = 1.0/scale # depends on ppi of display!
     return ((x * w * sc + cam[0]), -(y * h * sc + cam[1]))
 
+def draw_noise(noise_surface, noise_polys):
+    noise_surface.fill((0,0,0,0))
+    for noise_poly in noise_polys:
+        screencoords2 = [ map_to_screen(x[0], x[1], cam) for x in noise_poly.points]
+        col = config["colourkey"][str(noise_poly.properties["IDISO"])]
+        pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
+
+def draw_map(surface, mapgeoms):
+    surface.fill((0,0,0))
+    for mapgeom in mapgeoms:
+        screencoords = [ map_to_screen(x[0],x[1],cam) for x in mapgeom.points]
+        pygame.draw.polygon(surface, (255,255,255), screencoords, 0 )
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
     parser.add_argument('--ip', type=str, default=config["tuio_host"],help="the IP address of the tuio host. If omitted, read from config.json")
@@ -119,7 +132,18 @@ if __name__ == "__main__":
 
     scaleimg = pygame.image.load("scale_100m_325px.png")
     scaleimg = pygame.transform.scale(scaleimg,(int(100*config["pxpm"]),scaleimg.get_size()[1]))
-    
+
+    map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
+    map_surface.fill(black)
+    noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
+    noise_surface.fill((0,0,0,0))
+    # draw background map
+    draw_map(map_surface,mapgeoms)
+    # draw noise
+    draw_noise(noise_surface, noise_polys)
+    screen.blit(noise_surface, (0,0))
+    redraw = False
+
 
     while 1:
         if fo.ook():
@@ -129,22 +153,19 @@ if __name__ == "__main__":
                 noise_polys = new_noise_polys
                 if not fo:
                     fo = FileObserver(putputfilepath)
-
+                redraw = True
+                    
+  
+        # update screen
         screen.fill(black)
-        # draw background map
-        for mapgeom in mapgeoms:
-            screencoords = [ map_to_screen(x[0],x[1],cam) for x in mapgeom.points]
-            pygame.draw.polygon(screen, (255,255,255), screencoords, 0 )
-
-        noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
-        noise_surface.fill((0,0,0,0))         
-        # draw noise
-        for noise_poly in noise_polys:
-            screencoords2 = [ (x[0]-cam[0], x[1]-cam[1]) for x in noise_poly.points]
-            screencoords2 = [ map_to_screen(x[0], x[1], cam) for x in noise_poly.points]
-            col = config["colourkey"][str(noise_poly.properties["IDISO"])]
-            pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
-        screen.blit(noise_surface, (0,0))  
+        screen.blit(map_surface, (0,0))
+        screen.blit(noise_surface, (0,0))
+        if redraw:
+            # draw background map
+            draw_map(map_surface,mapgeoms)
+            # draw noise
+            draw_noise(noise_surface, noise_polys)
+            redraw = False
 
 
         obj_surface = pygame.Surface((24,24)) # rendertarget for objects
@@ -172,12 +193,16 @@ if __name__ == "__main__":
         # cam navigation
         if(keys != [] and keys[pygame.K_w]):
             cam = (cam[0], cam[1]-camspeed)
+            redraw = True
         if(keys != [] and keys[pygame.K_a]):
             cam = (cam[0]-camspeed, cam[1])
+            redraw = True
         if(keys != [] and keys[pygame.K_s]):
             cam = (cam[0], cam[1]+camspeed)
+            redraw = True
         if(keys != [] and keys[pygame.K_d]):
             cam = (cam[0]+camspeed, cam[1])
+            redraw = True
 
         if(keys != [] and keys[pygame.K_RETURN]):
             saveObjects(tracking.objects,cam)
@@ -190,6 +215,7 @@ if __name__ == "__main__":
             else:
                 screen = pygame.display.set_mode([screenwidth,screenheight])
             isFullscreen = not isFullscreen
+            redraw = True
 
         if(keys != [] and keys[pygame.K_h]): # debug output
             print(fullscreen_width, fullscreen_height)
