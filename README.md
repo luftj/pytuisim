@@ -56,6 +56,6 @@ Contains deployment config:
 * colour coding key for noise output. in 5 dB(A) steps from 0 = <45 to 6 = >75dB(A)
 
 ### geometry.json
-Contains geomtries for the different objects, see the provided sample for syntax.
+Contains geomtries for the different objects, see the provided sample for syntax. All units are in metres. Positive Y is east, positive Y is north (when camera is below table)
 The rotational centre is at (0,0).
 Use the ID 0 to provide a default geometry for all not specifically described TUIO objects
