@@ -1,5 +1,5 @@
 {
-    "map_path" : "data/SiedlungsflaechenGrasbrook.json",
+    "map_path" : "data/grasbrook_land.geojson",
     "tuio_host" : "127.0.0.1",
     "tuio_port" : "3333",
     "colourkey" : {
