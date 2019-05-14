@@ -210,7 +210,7 @@ if __name__ == "__main__":
             redraw = True
 
         if(keys != [] and keys[pygame.K_RETURN]):
-            saveObjects(tracking.objects,cam)
+            saveObjects(tracking.objects(),cam)
             makeSomeNoise()
 
         # toggle fullscreen mode
