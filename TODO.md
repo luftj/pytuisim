@@ -39,7 +39,8 @@ get noise source from TUI-objects as well?
 
 - [X] plot background json
 - [X] plot object 
-    - [ ] plot geometry in real time? Shouldn't be necessary, when tracking is fast enough
+    - [X] plot geometry in real time? Shouldn't be necessary, when tracking is fast enough
+    - [ ] halo effect?
 - [X] plot noise json
   - [X] read feature properties from file
   - [X] colour iso-polys

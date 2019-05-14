@@ -60,16 +60,24 @@ def noisethread():
 def makeSomeNoise():
     start_new_thread(noisethread,())
 
-def saveObjects(trackingobjects, cam):
+def drawObjects(trackingobjects, cam, screen):
+    objectgeoms = makeObjects(trackingobjects,cam)
+    for geom in objectgeoms:
+        screencoords = [ map_to_screen(x[0],-x[1],cam) for x in geom.points]
+        pygame.draw.polygon(screen, (255,0,0), screencoords, 0 )
+
+def makeObjects(trackingobjects, cam):
     ret = []
-    for obj in trackingobjects():
+    for obj in trackingobjects:
         # obj.xpos,ypos is in [0,1]
         center = screen_to_map(obj.xpos, obj.ypos, cam) # position of object in world coords
         geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
+    return ret
 
-    data = (geometry.Geometry.writeGeometriesToFile(ret))
+def saveObjects(trackingobjects, cam):
+    data = (geometry.Geometry.writeGeometriesToFile(makeObjects(trackingobjects, cam)))
 
     # debug
     #writeFile("data/output.geojson",data)
@@ -145,7 +153,7 @@ if __name__ == "__main__":
     draw_noise(noise_surface, noise_polys)
     screen.blit(noise_surface, (0,0))
     redraw = False
-    
+
     fo = FileObserver(putputfilepath)
 
 
@@ -171,8 +179,7 @@ if __name__ == "__main__":
 
         # handle objects
         tracking.update()
-        for obj in tracking.objects():
-            handle_object(obj, obj_surface)
+        drawObjects(tracking.objects(), cam, screen)
 
         # draw legend
         screen.blit(scaleimg, (0,screen.get_size()[1]-40))
