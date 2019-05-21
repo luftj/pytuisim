@@ -108,6 +108,8 @@ def draw_noise(noise_surface, noise_polys):
     noise_surface.fill((0,0,0,0))
     for noise_poly in noise_polys:
         screencoords2 = [ map_to_screen(x[0], x[1], cam) for x in noise_poly.points]
+        if len(screencoords2) <= 2:
+            continue 
         col = config["colourkey"][str(noise_poly.properties["IDISO"])]
         pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
 

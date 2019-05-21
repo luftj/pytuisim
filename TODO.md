@@ -34,6 +34,7 @@ get noise source from TUI-objects as well?
   - [ ] tracking async?
   - [X] optimise drawing
   - [X] noise sim
+  - [X] line simplification
 
 ## output
 

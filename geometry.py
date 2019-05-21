@@ -109,7 +109,7 @@ class Geometry:
         if(ret == []):
             print("no geometry for given ID found! Use default")
             return Geometry.createObject(filepath,Geometry.defaultid,position,orientation)
-        print(ret)
+        #print(ret)
         g = Geometry(ret)
         g.id = id
         return g
