@@ -31,7 +31,7 @@ get noise source from TUI-objects as well?
 - [X] receive noise json from model
 - [X] pygame window (fullscreen, ...)
 - [ ] be faster!
-  - [ ] tracking async?
+  - [ ] update tracking exactly as often as necessary
   - [X] optimise drawing
   - [X] noise sim
   - [X] line simplification
@@ -61,7 +61,8 @@ get noise source from TUI-objects as well?
     - [ ] put used packages into seperate modules and repos
     - [X] requirements.txt
 - [ ] deployment 
-    - [ ] start script
-    - [ ] install script for used external packages -> requirements.txt
+    - [X] start script win
+    - [ ] start script linux
+    - [X] install script for used external packages -> requirements.txt
     - [ ] install own modules and dependencies
     - [ ] include external binary software? (TUIO server etc)

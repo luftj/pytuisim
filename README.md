@@ -27,7 +27,8 @@ This project brings noise simulations to a tangible user interface
 ### Start noise simulation database:
 Linux: ```java -cp 'bin/*:bundle/*:sys-bundle/*' org.h2.tools.Server -pg``` in the ```CSL_Hamburg_Noise``` directory
 
-Windows: ```java -cp 'bin/*;bundle/*;sys-bundle/*' org.h2.tools.Server -pg``` in the ```CSL_Hamburg_Noise``` directory
+Windows (cmd.exe): ```java -cp bin/*;bundle/*;sys-bundle/* org.h2.tools.Server -pg``` in the ```CSL_Hamburg_Noise``` directory
+Windows (powershell.exe): ```java -cp 'bin/*;bundle/*;sys-bundle/*' org.h2.tools.Server -pg``` in the ```CSL_Hamburg_Noise``` directory
 
 ### Start interactive tool:
 ``` python main.py ```
