@@ -17,6 +17,9 @@ config = json.load(open("config.json"))
 putputfilepath = "data/conversion.geojson"
 scale = config["pxpm"]
 
+file = open("geometry.json")
+geometriesjson = json.load(file)
+
 class FileObserver(object):
     def __init__(self,file):
         self._cached_stamp = 0
@@ -71,7 +74,8 @@ def makeObjects(trackingobjects, cam):
     for obj in trackingobjects:
         # obj.xpos,ypos is in [0,1]
         center = screen_to_map(obj.xpos, obj.ypos, cam) # position of object in world coords
-        geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
+        #geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
+        geom = geometry.Geometry.createObjectFromString(geometriesjson, obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
     return ret

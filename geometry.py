@@ -106,9 +106,30 @@ class Geometry:
                         newp = rotatePointAroundOrigin(point, orientation) # rotate
                         newp = (newp[0]+position[0],newp[1]+position[1])   # translate
                         ret.append(newp)
+                    break
         if(ret == []):
-            print("no geometry for given ID found! Use default")
+            #print("no geometry for given ID found! Use default")
             return Geometry.createObject(filepath,Geometry.defaultid,position,orientation)
+        #print(ret)
+        g = Geometry(ret)
+        g.id = id
+        return g
+
+    @staticmethod
+    def createObjectFromString(json, id, position, orientation):
+        ret = []
+
+        data = json
+        for obj in data["objects"]:
+            if(obj["id"] == id):
+                for point in obj["coordinates"]:
+                    newp = rotatePointAroundOrigin(point, orientation) # rotate
+                    newp = (newp[0]+position[0],newp[1]+position[1])   # translate
+                    ret.append(newp)
+                break
+        if(ret == []):
+            #print("no geometry for given ID found! Use default")
+            return Geometry.createObjectFromString(json,Geometry.defaultid,position,orientation)
         #print(ret)
         g = Geometry(ret)
         g.id = id
