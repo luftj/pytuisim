@@ -127,6 +127,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
     parser.add_argument('--ip', type=str, default=config["tuio_host"],help="the IP address of the tuio host. If omitted, read from config.json")
     parser.add_argument('--port', type=int, default=int(config["tuio_port"]),help="the port of the tuio host. If omitted, read from config.json")
+    parser.add_argument('--updates', type=int, default=1,help="number of TUIO updates per frame")
     args = parser.parse_args()
 
     # initialise
@@ -184,7 +185,8 @@ if __name__ == "__main__":
             redraw = False
 
         # handle objects
-        tracking.update()
+        for i in range(args.updates):
+            tracking.update()
         drawObjects(tracking.objects(), cam, screen)
 
         # draw legend
