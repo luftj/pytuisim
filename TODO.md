@@ -56,7 +56,7 @@ get noise source from TUI-objects as well?
 - [ ] packaging
     - [ ] config
         - [X] tuio address/port from file
-        - [ ] map center / scale (or calculate it from input map?)
+        - [X] map center / scale (or calculate it from input map?)
         - [ ] "invert" option, for different camera setups?
     - [ ] put used packages into seperate modules and repos
     - [X] requirements.txt

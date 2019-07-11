@@ -78,7 +78,6 @@ def makeObjects(trackingobjects, cam):
     for obj in trackingobjects:
         # obj.xpos,ypos is in [0,1]
         center = screen_to_map(obj.xpos, obj.ypos, cam) # position of object in world coords
-        #geom = geometry.Geometry.createObject("geometry.json", obj.id, center, -obj.angle)
         geom = geometry.Geometry.createObjectFromString(geometriesjson, obj.id, center, -obj.angle)
         if geom:
             ret.append(geom)
@@ -173,8 +172,7 @@ if __name__ == "__main__":
             if not new_noise_polys == []:
                 noise_polys = new_noise_polys
                 redraw = True
-                    
-  
+
         # update screen
         screen.fill(black)
         screen.blit(map_surface, (0,0))
@@ -209,44 +207,45 @@ if __name__ == "__main__":
             if event.type == pygame.KEYDOWN:
                 keys = pygame.key.get_pressed()
 
-        if(keys != [] and keys[pygame.K_ESCAPE]):
-            sys.exit()
+        if keys != []:
+            if keys[pygame.K_ESCAPE]:
+                sys.exit()
 
-        # cam navigation
-        if(keys != [] and keys[pygame.K_w]):
-            cam = (cam[0], cam[1]-camspeed)
-            redraw = True
-        if(keys != [] and keys[pygame.K_a]):
-            cam = (cam[0]-camspeed, cam[1])
-            redraw = True
-        if(keys != [] and keys[pygame.K_s]):
-            cam = (cam[0], cam[1]+camspeed)
-            redraw = True
-        if(keys != [] and keys[pygame.K_d]):
-            cam = (cam[0]+camspeed, cam[1])
-            redraw = True
+            # cam navigation
+            if keys[pygame.K_w]:
+                cam = (cam[0], cam[1]-camspeed)
+                redraw = True
+            if keys[pygame.K_a]:
+                cam = (cam[0]-camspeed, cam[1])
+                redraw = True
+            if keys[pygame.K_s]:
+                cam = (cam[0], cam[1]+camspeed)
+                redraw = True
+            if keys[pygame.K_d]:
+                cam = (cam[0]+camspeed, cam[1])
+                redraw = True
 
-        if(keys != [] and keys[pygame.K_RETURN]):
-            saveObjects(tracking.objects(),cam)
-            makeSomeNoise()
-            global computationInProgress
-            computationInProgress = True
+            if keys[pygame.K_RETURN]:
+                saveObjects(tracking.objects(),cam)
+                makeSomeNoise()
+                global computationInProgress
+                computationInProgress = True
 
-        # toggle fullscreen mode
-        if(keys != [] and keys[pygame.K_SPACE]):
-            if not isFullscreen:
-                screen = pygame.display.set_mode([fullscreen_width,fullscreen_height], flags=pygame.FULLSCREEN)
-            else:
-                screen = pygame.display.set_mode([screenwidth, screenheight])
-            isFullscreen = not isFullscreen
+            # toggle fullscreen mode
+            if keys[pygame.K_SPACE]:
+                if not isFullscreen:
+                    screen = pygame.display.set_mode([fullscreen_width,fullscreen_height], flags=pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode([screenwidth, screenheight])
+                isFullscreen = not isFullscreen
 
-            map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
-            noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
-            redraw = True
+                map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
+                noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
+                redraw = True
 
-        if(keys != [] and keys[pygame.K_h]): # debug output
-            print(fullscreen_width, fullscreen_height)
-            print(pygame.display.Info())
-            print(pygame.display.get_surface().get_size())
+            if keys[pygame.K_h]: # debug output
+                print(fullscreen_width, fullscreen_height)
+                print(pygame.display.Info())
+                print(pygame.display.get_surface().get_size())
 
         pygame.display.flip()
