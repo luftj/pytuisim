@@ -147,7 +147,7 @@ if __name__ == "__main__":
     cam = config["mapcenter"]
     camspeed = 70
 
-    scaleimg = pygame.image.load("scale_100m_325px.png")
+    scaleimg = pygame.image.load("scale_100m_325px_label_transp.png")
     scaleimg = pygame.transform.scale(scaleimg,(int(100*config["pxpm"]),scaleimg.get_size()[1]))
     circleimg = pygame.image.load('circle2.png')
     circleangle = 0
@@ -192,7 +192,7 @@ if __name__ == "__main__":
         drawObjects(tracking.objects(), cam, screen)
 
         # draw legend
-        screen.blit(scaleimg, (0, screen.get_size()[1]-40))
+        screen.blit(scaleimg, (0, screen.get_size()[1]-50))
         
         # draw computation indicator
         if computationInProgress:
