@@ -130,16 +130,14 @@ def load_raster(cam):
     bbox+=str(screen_to_map(1,1,cam)[1])+","
     bbox+=str(screen_to_map(1,1,cam)[0])+","
     bbox+=str(screen_to_map(0,0,cam)[1])
-    print(bbox)
     layers = "1"
     url_luftbild = "https://geodienste.hamburg.de/HH_WMS_DOP?service=WMS&version=1.1.0&request=GetMap&layers={layers}&styles=&bbox={bbox}" \
-          "&width={width}&height={height}&srs=EPSG:25832&format=image%2F{format}".format(bbox=bbox, layers=layers, width= fullscreen_width, height=fullscreen_height, format="png")
-    print(url_luftbild)
+          "&width={width}&height={height}&srs=EPSG:25832&format=image%2F{format}".format(bbox=bbox, layers=layers, width= fullscreen_width, height=fullscreen_height, format="jpeg")
 
     import urllib
-    urllib.urlretrieve(url_luftbild,"data/raster.png")
+    urllib.urlretrieve(url_luftbild,"data/raster.jpg")
 
-    return pygame.image.load("data/raster.png")
+    return pygame.image.load("data/raster.jpg")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="convert shape to geojson")
@@ -168,19 +166,18 @@ if __name__ == "__main__":
     circleimg = pygame.image.load('circle2.png')
     circleangle = 0
 
-    map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
-    map_surface.fill(black)
+    # map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
+    # map_surface.fill(black)
     noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
     noise_surface.fill((0,0,0,0))
     # draw background map
-    draw_map(map_surface,mapgeoms)
+    # draw_map(map_surface,mapgeoms)
+    rastermap = load_raster(cam)
+    screen.blit(rastermap, (0,0))
     # draw noise
     draw_noise(noise_surface, noise_polys)
     screen.blit(noise_surface, (0,0))
     redraw = False
-    
-    rastermap = load_raster(cam)
-    screen.blit(rastermap, (0,0))
 
     fo = FileObserver(putputfilepath)
 
@@ -195,12 +192,12 @@ if __name__ == "__main__":
 
         # update screen
         screen.fill(black)
-        screen.blit(map_surface, (0,0))
+        # screen.blit(map_surface, (0,0))
         screen.blit(rastermap, (0,0))
         screen.blit(noise_surface, (0,0))
         if redraw:
             # draw background map
-            draw_map(map_surface,mapgeoms)
+            # draw_map(map_surface,mapgeoms)
             rastermap = load_raster(cam)
             # draw noise
             draw_noise(noise_surface, noise_polys)
