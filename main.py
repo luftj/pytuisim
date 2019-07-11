@@ -20,6 +20,8 @@ scale = config["pxpm"]
 file = open("geometry.json")
 geometriesjson = json.load(file)
 
+computationInProgress = False
+
 class FileObserver(object):
     def __init__(self,file):
         self._cached_stamp = 0
@@ -59,6 +61,8 @@ def writeFile(filepath, data):
 def noisethread():
     shapefile = noisemap.main()
     convert.convert(shapefile, putputfilepath)
+    global computationInProgress
+    computationInProgress = False
 
 def makeSomeNoise():
     start_new_thread(noisethread,())
@@ -98,6 +102,15 @@ def handle_object(obj, obj_surface):
     rect = rotated.get_rect()                                       # re-align (rotation resizes)
     rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # re-align
     pygame.display.get_surface().blit(rotated, rect)   
+
+def rotateBlit(target, sprite, center, angle):
+    rect = sprite.get_rect()                         # get bounds
+    rect.center = center                             # position of object
+    rotated = pygame.transform.rotate(sprite, angle) # rotate objects, angle in degrees
+    rect = rotated.get_rect()                        # re-align (rotation resizes)
+    rect.center = center                             # re-align
+    target.blit(rotated, rect)   
+
 
 def map_to_screen(x, y, cam):
     sc = scale # depends on ppi of display!
@@ -147,6 +160,8 @@ if __name__ == "__main__":
 
     scaleimg = pygame.image.load("scale_100m_325px.png")
     scaleimg = pygame.transform.scale(scaleimg,(int(100*config["pxpm"]),scaleimg.get_size()[1]))
+    circleimg = pygame.image.load('circle.png')
+    circleangle = 0
 
     map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
     map_surface.fill(black)
@@ -192,6 +207,13 @@ if __name__ == "__main__":
         # draw legend
         screen.blit(scaleimg, (0,screen.get_size()[1]-40))
         
+        # draw computation indicator
+        if computationInProgress:
+            center = (screen.get_size()[0]/2, screen.get_size()[1]/2)
+            rotateBlit(screen, circleimg, center, circleangle) # blit circle
+            circleangle -= 5 # rotate
+            if circleangle > 360:
+                circleangle -= 360
 
         # Keyboard input
         keys = []   # reset input
@@ -220,13 +242,15 @@ if __name__ == "__main__":
         if(keys != [] and keys[pygame.K_RETURN]):
             saveObjects(tracking.objects(),cam)
             makeSomeNoise()
+            global computationInProgress
+            computationInProgress = True
 
         # toggle fullscreen mode
         if(keys != [] and keys[pygame.K_SPACE]):
             if not isFullscreen:
-                screen = pygame.display.set_mode([fullscreen_width,fullscreen_height],flags=pygame.FULLSCREEN)
+                screen = pygame.display.set_mode([fullscreen_width,fullscreen_height], flags=pygame.FULLSCREEN)
             else:
-                screen = pygame.display.set_mode([screenwidth,screenheight])
+                screen = pygame.display.set_mode([screenwidth, screenheight])
             isFullscreen = not isFullscreen
 
             map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency

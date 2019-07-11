@@ -46,7 +46,7 @@ get noise source from TUI-objects as well?
   - [X] read feature properties from file
   - [X] colour iso-polys
     - [X] read colour key from config
-- [ ] indicate computation in process
+- [X] indicate computation in process
 - [ ] show colour legend
 
 ## general
