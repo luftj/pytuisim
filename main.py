@@ -10,7 +10,7 @@ import geometry
 import convert
 
 screenwidth = 800
-screenheight = 800
+screenheight = 600
 fullscreen_width = 0
 fullscreen_height = 0
 config = json.load(open("config.json"))
@@ -93,16 +93,6 @@ def saveObjects(trackingobjects, cam):
     # output
     writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json",data)
 
-def handle_object(obj, obj_surface):
-    screensize = pygame.display.get_surface().get_size()
-    rect = obj_surface.get_rect()  
-    rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # position of object
-    obj_surface.set_colorkey(black)                                 # allows transparency while padding during rotate
-    rotated = pygame.transform.rotate(obj_surface, -obj.angle)       # rotate objects
-    rect = rotated.get_rect()                                       # re-align (rotation resizes)
-    rect.center = (obj.xpos*screensize[0], obj.ypos*screensize[1])   # re-align
-    pygame.display.get_surface().blit(rotated, rect)   
-
 def rotateBlit(target, sprite, center, angle):
     rect = sprite.get_rect()                         # get bounds
     rect.center = center                             # position of object
@@ -110,7 +100,6 @@ def rotateBlit(target, sprite, center, angle):
     rect = rotated.get_rect()                        # re-align (rotation resizes)
     rect.center = center                             # re-align
     target.blit(rotated, rect)   
-
 
 def map_to_screen(x, y, cam):
     sc = scale # depends on ppi of display!
@@ -160,15 +149,13 @@ if __name__ == "__main__":
 
     scaleimg = pygame.image.load("scale_100m_325px.png")
     scaleimg = pygame.transform.scale(scaleimg,(int(100*config["pxpm"]),scaleimg.get_size()[1]))
-    circleimg = pygame.image.load('circle.png')
+    circleimg = pygame.image.load('circle2.png')
     circleangle = 0
 
     map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
     map_surface.fill(black)
     noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
     noise_surface.fill((0,0,0,0))
-    obj_surface = pygame.Surface((24,24)) # rendertarget for objects
-    obj_surface.fill((255,0,0))
     # draw background map
     draw_map(map_surface,mapgeoms)
     # draw noise
@@ -205,11 +192,11 @@ if __name__ == "__main__":
         drawObjects(tracking.objects(), cam, screen)
 
         # draw legend
-        screen.blit(scaleimg, (0,screen.get_size()[1]-40))
+        screen.blit(scaleimg, (0, screen.get_size()[1]-40))
         
         # draw computation indicator
         if computationInProgress:
-            center = (screen.get_size()[0]/2, screen.get_size()[1]/2)
+            center = (screen.get_size()[0]/2, screen.get_size()[1]/2) # position at middle of the window
             rotateBlit(screen, circleimg, center, circleangle) # blit circle
             circleangle -= 5 # rotate
             if circleangle > 360:
