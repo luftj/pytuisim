@@ -2,6 +2,7 @@ import sys, pygame
 import json
 import os
 import argparse
+import urllib
 from thread import start_new_thread
 
 import tuio
@@ -134,7 +135,6 @@ def load_raster(cam):
     url_luftbild = "https://geodienste.hamburg.de/HH_WMS_DOP?service=WMS&version=1.1.0&request=GetMap&layers={layers}&styles=&bbox={bbox}" \
           "&width={width}&height={height}&srs=EPSG:25832&format=image%2F{format}".format(bbox=bbox, layers=layers, width= fullscreen_width, height=fullscreen_height, format="jpeg")
 
-    import urllib
     urllib.urlretrieve(url_luftbild,"data/raster.jpg")
 
     return pygame.image.load("data/raster.jpg")

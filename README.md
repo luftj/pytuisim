@@ -20,7 +20,7 @@ This project brings noise simulations to a tangible user interface
 * [noise simulation](https://github.com/CityScope/CSL_Hamburg_Noise) -- put it in ```CSL_Hamburg_Noise``` directory
   
 
-```python -m pip install requirements.txt CSL_Hamburg_Noise/requirements.txt```
+```python -m pip install -r requirements.txt CSL_Hamburg_Noise/requirements.txt```
 
 ## Usage
 
