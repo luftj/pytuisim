@@ -7,9 +7,6 @@
 import json, sys
 import math
 
-def parsePolygon(feature):
-    pass
-
 def rotatePointAroundOrigin(point, angle):
     # point to rotate nad angle in degrees
     #
@@ -58,7 +55,10 @@ class Geometry:
             ret+="["+str(p[0])+","+str(p[1])+"],"
         ret+="["+str(self.points[0][0])+","+str(self.points[0][1])+"]" # closed ring, last one without trailing comma
 
-        ret += "]]}}"
+        ret += "]]},"
+        ret += "\"properties\": "
+        ret += str(self.properties)
+        ret += "}"
         return ret
 
     @staticmethod
@@ -97,6 +97,7 @@ class Geometry:
     @staticmethod
     def createObject(filepath, id, position, orientation):
         ret = []
+        properties = {}
 
         with open(filepath) as file:
             data = json.load(file)
@@ -106,18 +107,25 @@ class Geometry:
                         newp = rotatePointAroundOrigin(point, orientation) # rotate
                         newp = (newp[0]+position[0],newp[1]+position[1])   # translate
                         ret.append(newp)
+                    if "properties" in obj:
+                        properties = obj["properties"]
                     break
         if(ret == []):
             #print("no geometry for given ID found! Use default")
-            return Geometry.createObject(filepath,Geometry.defaultid,position,orientation)
-        #print(ret)
+            ret = Geometry.createObject(filepath, Geometry.defaultid, position, orientation)
+            # TODO default height
+            # g.properties["height"] = 12
+            return ret
+        
         g = Geometry(ret)
         g.id = id
+        g.properties = properties
         return g
 
     @staticmethod
     def createObjectFromString(json, id, position, orientation):
         ret = []
+        properties = {}
 
         data = json
         for obj in data["objects"]:
@@ -126,13 +134,19 @@ class Geometry:
                     newp = rotatePointAroundOrigin(point, orientation) # rotate
                     newp = (newp[0]+position[0],newp[1]+position[1])   # translate
                     ret.append(newp)
+                if "properties" in obj:
+                    properties = obj["properties"]
                 break
         if(ret == []):
             #print("no geometry for given ID found! Use default")
-            return Geometry.createObjectFromString(json,Geometry.defaultid,position,orientation)
-        #print(ret)
+            ret = Geometry.createObjectFromString(json,Geometry.defaultid,position,orientation)
+            # TODO default height
+            # g.properties["height"] = 12
+            return ret
+        
         g = Geometry(ret)
         g.id = id
+        g.properties = properties
         return g
 
     @staticmethod
