@@ -60,8 +60,12 @@ def writeFile(filepath, data):
     f.write(data)
 
 def noisethread():
-    shapefile = noisemap.main()
-    convert.convert(shapefile, putputfilepath)
+    # global putputfilepath
+    outputfile = noisemap.compute_noise_propagation()
+    from shutil import copyfile
+    copyfile(outputfile,putputfilepath)
+
+    #convert.convert(shapefile, putputfilepath)
     global computationInProgress
     computationInProgress = False
 
@@ -90,8 +94,10 @@ def saveObjects(trackingobjects, cam):
     # debug
     #writeFile("data/output.geojson",data)
 
+    from shutil import copyfile
     # output
-    writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json",data)
+    # writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json",data)
+    copyfile(config["map_path"],os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json")
 
 def rotateBlit(target, sprite, center, angle):
     rect = sprite.get_rect()                         # get bounds
@@ -113,17 +119,18 @@ def screen_to_map(x, y, cam):
 def draw_noise(noise_surface, noise_polys):
     noise_surface.fill((0,0,0,0))
     for noise_poly in noise_polys:
+        #if noise_poly.properties["idiso"] == 0: continue
         screencoords2 = [ map_to_screen(x[0], x[1], cam) for x in noise_poly.points]
         if len(screencoords2) <= 2:
             continue 
-        col = config["colourkey"][str(noise_poly.properties["IDISO"])]
+        col = config["colourkey"][str(noise_poly.properties["idiso"])]
         pygame.draw.polygon(noise_surface, col, screencoords2, 0 )
 
 def draw_map(surface, mapgeoms):
-    surface.fill((0,0,0))
+    surface.fill((0,0,0,0))
     for mapgeom in mapgeoms:
         screencoords = [ map_to_screen(x[0],x[1],cam) for x in mapgeom.points]
-        pygame.draw.polygon(surface, (255,255,255), screencoords, 0 )
+        pygame.draw.polygon(surface, (255,255,255,255), screencoords, 0 )
 
 def load_raster(cam):
     bbox = ""
@@ -131,6 +138,7 @@ def load_raster(cam):
     bbox+=str(screen_to_map(1,1,cam)[1])+","
     bbox+=str(screen_to_map(1,1,cam)[0])+","
     bbox+=str(screen_to_map(0,0,cam)[1])
+    print(bbox)
     layers = "1"
     url_luftbild = "https://geodienste.hamburg.de/HH_WMS_DOP?service=WMS&version=1.1.0&request=GetMap&layers={layers}&styles=&bbox={bbox}" \
           "&width={width}&height={height}&srs=EPSG:25832&format=image%2F{format}".format(bbox=bbox, layers=layers, width= fullscreen_width, height=fullscreen_height, format="jpeg")
@@ -166,14 +174,14 @@ if __name__ == "__main__":
     circleimg = pygame.image.load('circle2.png')
     circleangle = 0
 
-    # map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
-    # map_surface.fill(black)
+    map_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
+    map_surface.fill((0,0,0,0))
     noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
     noise_surface.fill((0,0,0,0))
     # draw background map
-    # draw_map(map_surface,mapgeoms)
-    rastermap = load_raster(cam)
-    screen.blit(rastermap, (0,0))
+    draw_map(map_surface, mapgeoms)
+    # rastermap = load_raster(cam)
+    # screen.blit(rastermap, (0,0))
     # draw noise
     draw_noise(noise_surface, noise_polys)
     screen.blit(noise_surface, (0,0))
@@ -185,6 +193,7 @@ if __name__ == "__main__":
     while 1:
         if fo.ook():
             print("noise changed")
+            print(putputfilepath)
             new_noise_polys = geometry.Geometry.fromjson(putputfilepath) # reload noise output geometry, when file changed
             if not new_noise_polys == []:
                 noise_polys = new_noise_polys
@@ -192,13 +201,13 @@ if __name__ == "__main__":
 
         # update screen
         screen.fill(black)
-        # screen.blit(map_surface, (0,0))
-        screen.blit(rastermap, (0,0))
+        # screen.blit(rastermap, (0,0))
         screen.blit(noise_surface, (0,0))
+        screen.blit(map_surface, (0,0))
         if redraw:
             # draw background map
-            # draw_map(map_surface,mapgeoms)
-            rastermap = load_raster(cam)
+            draw_map(map_surface,mapgeoms)
+            # rastermap = load_raster(cam)
             # draw noise
             draw_noise(noise_surface, noise_polys)
             redraw = False
@@ -258,7 +267,7 @@ if __name__ == "__main__":
                     screen = pygame.display.set_mode([screenwidth, screenheight])
                 isFullscreen = not isFullscreen
 
-                map_surface = pygame.Surface(screen.get_size()) # rendertarget for noise output with transpaency
+                map_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
                 noise_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA) # rendertarget for noise output with transpaency
                 redraw = True
 

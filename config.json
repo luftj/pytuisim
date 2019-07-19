@@ -1,9 +1,9 @@
 {
-    "map_path" : "data/grasbrook_land.geojson",
+    "map_path" : "data/background_Einfamilienhausgebiet.geojson",
     "tuio_host" : "127.0.0.1",
     "tuio_port" : "3333",
     "pxpm" : 3.75,
-    "mapcenter" : [566300, -5932300],
+    "mapcenter" : [566906, -5932070],
     "colourkey" : {
         "0":[ 76,200,  0,128],
         "1":[ 85,255,  0,128],
