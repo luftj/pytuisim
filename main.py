@@ -63,7 +63,7 @@ def noisethread():
     # global putputfilepath
     outputfile = noisemap.compute_noise_propagation()
     from shutil import copyfile
-    copyfile(outputfile,putputfilepath)
+    copyfile(outputfile, putputfilepath)
 
     #convert.convert(shapefile, putputfilepath)
     global computationInProgress
@@ -81,7 +81,7 @@ def drawObjects(trackingobjects, cam, screen):
 def makeObjects(trackingobjects, cam):
     ret = []
     for obj in trackingobjects:
-        # obj.xpos,ypos is in [0,1]
+        # obj.xpos, ypos is in [0,1]
         center = screen_to_map(obj.xpos, obj.ypos, cam) # position of object in world coords
         geom = geometry.Geometry.createObjectFromString(geometriesjson, obj.id, center, -obj.angle)
         if geom:
@@ -96,8 +96,8 @@ def saveObjects(trackingobjects, cam):
 
     from shutil import copyfile
     # output
-    # writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json",data)
-    copyfile(config["map_path"],os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json")
+    writeFile(os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json", data)
+    # copyfile(config["map_path"],os.path.dirname(os.path.abspath(noisemap.__file__))+"\\input_geojson\\design\\buildings" + "\\buildings.json") # calculate noise from background map
 
 def rotateBlit(target, sprite, center, angle):
     rect = sprite.get_rect()                         # get bounds
@@ -112,6 +112,7 @@ def map_to_screen(x, y, cam):
     return ((x-cam[0])*sc,(y-cam[1])*sc)
 
 def screen_to_map(x, y, cam):
+    # x, y in [0,1]
     w,h = pygame.display.get_surface().get_size()
     sc = 1.0/scale # depends on ppi of display!
     return ((x * w * sc + cam[0]), -(y * h * sc + cam[1]))
@@ -119,7 +120,7 @@ def screen_to_map(x, y, cam):
 def draw_noise(noise_surface, noise_polys):
     noise_surface.fill((0,0,0,0))
     for noise_poly in noise_polys:
-        #if noise_poly.properties["idiso"] == 0: continue
+        #if noise_poly.properties["idiso"] == 0: continue # don't show outermost surface
         screencoords2 = [ map_to_screen(x[0], x[1], cam) for x in noise_poly.points]
         if len(screencoords2) <= 2:
             continue 
@@ -130,7 +131,7 @@ def draw_map(surface, mapgeoms):
     surface.fill((0,0,0,0))
     for mapgeom in mapgeoms:
         screencoords = [ map_to_screen(x[0],x[1],cam) for x in mapgeom.points]
-        pygame.draw.polygon(surface, (255,255,255,255), screencoords, 0 )
+        pygame.draw.polygon(surface, (155,155,155,255), screencoords, 0 )
 
 def load_raster(cam):
     bbox = ""
