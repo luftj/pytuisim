@@ -9,7 +9,6 @@ get noise source from TUI-objects as well?
 
 - [X] receive TUIO
 - [X] load object geometries
-  - [ ] real geojson?
   - [X] any ID / default geometry for unknown IDs
 - [X] convert TUIO to geometry
     - [X] rotate geometry
@@ -22,7 +21,8 @@ get noise source from TUI-objects as well?
   - [ ] seperate model scale from physical display PPI scale
 - [ ] proper geo-tranformations? (e.g. pyproj)
     - [ ] store projection in Geometry object?
-- [ ] allow raster background map
+- [X] allow raster background map
+  - [ ] toggle map layers
 
 ## putput
 
@@ -64,5 +64,5 @@ get noise source from TUI-objects as well?
     - [X] start script win
     - [ ] start script linux
     - [X] install script for used external packages -> requirements.txt
-    - [ ] install own modules and dependencies
+    - [X] install own submodules and dependencies
     - [ ] include external binary software? (TUIO server etc)
