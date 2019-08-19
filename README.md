@@ -26,7 +26,7 @@ This project brings noise simulations to a tangible user interface
 
 ## Usage
 
-![alt text](docs/chart-setup01.png "setup overview")
+![alt text](docs/chart-setup01.PNG "setup overview")
 
 ### Start noise simulation database:
 Linux: ```java -cp 'bin/*:bundle/*:sys-bundle/*' org.h2.tools.Server -pg``` in the ```CSL_Hamburg_Noise``` directory
