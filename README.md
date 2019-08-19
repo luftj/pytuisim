@@ -1,3 +1,5 @@
+![alt text](docs/imagetop.jpg "pytuisim in action")
+
 # pytuisim
 
 This project brings noise simulations to a tangible user interface
@@ -23,6 +25,8 @@ This project brings noise simulations to a tangible user interface
 ```python -m pip install -r requirements.txt CSL_Hamburg_Noise/requirements.txt```
 
 ## Usage
+
+![alt text](docs/chart-setup01.png "setup overview")
 
 ### Start noise simulation database:
 Linux: ```java -cp 'bin/*:bundle/*:sys-bundle/*' org.h2.tools.Server -pg``` in the ```CSL_Hamburg_Noise``` directory
