@@ -3,9 +3,12 @@ import json
 import os
 import argparse
 import urllib
-from thread import start_new_thread
+if sys.version_info[0] == 2:
+    from thread import start_new_thread
+elif sys.version_info[0] == 3:
+    from threading import Thread
 
-import tuio
+import pytuio as tuio
 from CSL_Hamburg_Noise import noisemap
 import geometry
 import convert
@@ -21,6 +24,7 @@ scale = config["pxpm"]
 file = open("geometry.json")
 geometriesjson = json.load(file)
 
+global computationInProgress
 computationInProgress = False
 
 class FileObserver(object):
@@ -70,7 +74,10 @@ def noisethread():
     computationInProgress = False
 
 def makeSomeNoise():
-    start_new_thread(noisethread,())
+    if sys.version_info[0] == 2:
+        start_new_thread(noisethread,())
+    elif sys.version_info[0] == 3:
+        Thread(target=noisethread).start()
 
 def drawObjects(trackingobjects, cam, screen):
     objectgeoms = makeObjects(trackingobjects,cam)
@@ -257,7 +264,6 @@ if __name__ == "__main__":
             if keys[pygame.K_RETURN]:
                 saveObjects(tracking.objects(),cam)
                 makeSomeNoise()
-                global computationInProgress
                 computationInProgress = True
 
             # toggle fullscreen mode
