@@ -1,6 +1,3 @@
 [submodule "CSL_Hamburg_Noise"]
 	path = CSL_Hamburg_Noise
 	url = git@github.com:CityScope/CSL_Hamburg_Noise.git
-[submodule "tuio"]
-	path = tuio
-	url = git@github.com:luftj/pytuio.git
