@@ -18,7 +18,7 @@ This project brings noise simulations to a tangible user interface
 
 
 ### Uses
-* [pytuio](https://code.google.com/archive/p/pytuio/) -- put it in ```tuio``` directory
+* [pytuio](https://github.com/luftj/pytuio) -- submodule in ```pytuio``` directory
 * [noise simulation](https://github.com/CityScope/CSL_Hamburg_Noise) -- submodule in ```CSL_Hamburg_Noise``` directory
   
 
